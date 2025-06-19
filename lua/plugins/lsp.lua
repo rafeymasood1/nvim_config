@@ -129,26 +129,50 @@ return { -- LSP Configuration & Plugins
               callSnippet = 'Replace',
             },
             telemetry = { enable = false },
-            diagnostics = { disable = { 'missing-fields' } },
-          },
-        },
-      },
-      pylsp = {
-        settings = {
-          pylsp = {
-            plugins = {
-              pyflakes = { enabled = false },
-              pycodestyle = { enabled = false },
-              autopep8 = { enabled = false },
-              yapf = { enabled = false },
-              mccabe = { enabled = false },
-              pylsp_mypy = { enabled = false },
-              pylsp_black = { enabled = false },
-              pylsp_isort = { enabled = false },
+            diagnostics = {
+              disable = { 'missing-fields' },
+              globals = { 'vim' }, -- ✅ This is the fix
             },
           },
         },
       },
+      emmet_ls = {
+        filetypes = {
+          'html',
+          'css',
+          'javascript',
+          'javascriptreact',
+          'typescriptreact',
+          'vue',
+          'svelte',
+          'blade',
+          'php',
+        },
+        init_options = {
+          html = {
+            options = {
+              ['bem.enabled'] = true,
+            },
+          },
+        },
+      },
+
+      -- pylsp = {
+      --   settings = {
+      --     pylsp = {
+      --       plugins = {
+      --         pyflakes = { enabled = false },
+      --         pycodestyle = { enabled = false },
+      --         autopep8 = { enabled = false },
+      --         yapf = { enabled = false },
+      --         mccabe = { enabled = false },
+      --         pylsp_mypy = { enabled = false },
+      --         pylsp_black = { enabled = false },
+      --         pylsp_isort = { enabled = false },
+      --       },
+      --     },
+      --   },
+      -- },
       -- basedpyright = {
       --   -- Config options: https://github.com/DetachHead/basedpyright/blob/main/docs/settings.md
       --   settings = {
@@ -165,34 +189,37 @@ return { -- LSP Configuration & Plugins
       --     },
       --   },
       -- },
-      ruff = {
-        -- Notes on code actions: https://github.com/astral-sh/ruff-lsp/issues/119#issuecomment-1595628355
-        -- Get isort like behavior: https://github.com/astral-sh/ruff/issues/8926#issuecomment-1834048218
-        commands = {
-          RuffAutofix = {
-            function()
-              vim.lsp.buf.execute_command {
-                command = 'ruff.applyAutofix',
-                arguments = {
-                  { uri = vim.uri_from_bufnr(0) },
-                },
-              }
-            end,
-            description = 'Ruff: Fix all auto-fixable problems',
-          },
-          RuffOrganizeImports = {
-            function()
-              vim.lsp.buf.execute_command {
-                command = 'ruff.applyOrganizeImports',
-                arguments = {
-                  { uri = vim.uri_from_bufnr(0) },
-                },
-              }
-            end,
-            description = 'Ruff: Format imports',
-          },
-        },
-      },
+      -- ruff = {
+      --   -- Notes on code actions: https://github.com/astral-sh/ruff-lsp/issues/119#issuecomment-1595628355
+      --   -- Get isort like behavior: https://github.com/astral-sh/ruff/issues/8926#issuecomment-1834048218
+      --   settings = {
+      --     ignore = { 'E301', 'E302', 'E303', 'E305', 'W291', 'W293', 'W391' },
+      --   },
+      --   commands = {
+      --     RuffAutofix = {
+      --       function()
+      --         vim.lsp.buf.execute_command {
+      --           command = 'ruff.applyAutofix',
+      --           arguments = {
+      --             { uri = vim.uri_from_bufnr(0) },
+      --           },
+      --         }
+      --       end,
+      --       description = 'Ruff: Fix all auto-fixable problems',
+      --     },
+      --     RuffOrganizeImports = {
+      --       function()
+      --         vim.lsp.buf.execute_command {
+      --           command = 'ruff.applyOrganizeImports',
+      --           arguments = {
+      --             { uri = vim.uri_from_bufnr(0) },
+      --           },
+      --         }
+      --       end,
+      --       description = 'Ruff: Format imports',
+      --     },
+      --   },
+      -- },
       jsonls = {},
       sqlls = {},
       terraformls = {},
@@ -216,6 +243,7 @@ return { -- LSP Configuration & Plugins
     local ensure_installed = vim.tbl_keys(servers or {})
     vim.list_extend(ensure_installed, {
       'stylua', -- Used to format lua code
+      'emmet_ls',
     })
     require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
@@ -227,7 +255,9 @@ return { -- LSP Configuration & Plugins
           -- by the server configuration above. Useful when disabling
           -- certain features of an LSP (for example, turning off formatting for tsserver)
           server.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server.capabilities or {})
-          require('lspconfig')[server_name].setup(server)
+          require('lspconfig')[server_name].setup(vim.tbl_deep_extend('force', {
+            filetypes = (server_name == 'html') and { 'html', 'twig', 'hbs' } or nil,
+          }, server))
         end,
       },
     }

@@ -38,4 +38,8 @@ return {
       require('colorizer').setup()
     end,
   },
+  {
+    'mattn/emmet-vim',
+    ft = { 'html', 'css', 'javascriptreact', 'typescriptreact', 'svelte', 'vue' },
+  },
 }

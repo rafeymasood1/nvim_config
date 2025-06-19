@@ -133,7 +133,7 @@ return {
       commands = {},
       window = {
         position = 'left',
-        width = 40,
+        width = 25,
         mapping_options = {
           noremap = true,
           nowait = true,
@@ -262,7 +262,8 @@ return {
             ['<down>'] = 'move_cursor_down',
             ['<C-n>'] = 'move_cursor_down',
             ['<up>'] = 'move_cursor_up',
-            ['<C-p>'] = 'move_cursor_up',
+            ['<Down>'] = 'next_source', -- or "next_node"
+            ['<Up>'] = 'prev_source', -- or "prev_node"           ['<C-p>'] = 'move_cursor_up',
           },
         },
 
