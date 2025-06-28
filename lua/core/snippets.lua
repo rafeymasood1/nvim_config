@@ -43,3 +43,15 @@ vim.cmd [[
   au VimEnter * :silent !kitty @ set-spacing padding=0 margin=0 3 0 3
   augroup END
 ]]
+
+-- Auto-save for HTML and CSS
+vim.api.nvim_create_autocmd({ 'InsertLeave', 'TextChanged' }, {
+  pattern = { '*.html', '*.css', '*.js', '*.ts', '*.jsx', '*.tsx', '*.json', '*.md' },
+  callback = function()
+    -- Only save if the buffer is modifiable and not readonly
+    if vim.bo.modifiable and not vim.bo.readonly and vim.bo.filetype ~= '' then
+      vim.cmd 'silent! write'
+    end
+  end,
+  desc = 'Auto-save on insert leave or text change for web files',
+})

@@ -38,8 +38,8 @@ vim.keymap.set('n', 'n', 'nzzzv')
 vim.keymap.set('n', 'N', 'Nzzzv')
 
 -- Resize with arrows
-vim.keymap.set('n', '<Up>', ':resize -2<CR>', opts)
-vim.keymap.set('n', '<Down>', ':resize +2<CR>', opts)
+vim.keymap.set('n', '<Up>', ':resize +2<CR>', opts)
+vim.keymap.set('n', '<Down>', ':resize -2<CR>', opts)
 vim.keymap.set('n', '<Left>', ':vertical resize -2<CR>', opts)
 vim.keymap.set('n', '<Right>', ':vertical resize +2<CR>', opts)
 
@@ -126,3 +126,5 @@ vim.api.nvim_create_autocmd('FileType', {
     vim.keymap.set('n', '<F5>', ':w<CR>:!node %<CR>', { buffer = true, noremap = true, silent = true })
   end,
 })
+-- Custom shortcuts
+vim.g.user_emmet_leader_key = '<C-e>'

@@ -109,117 +109,108 @@ return { -- LSP Configuration & Plugins
     local servers = {
       lua_ls = {
         -- cmd = {...},
-        -- filetypes { ...},
+        -- filetypes = { ...},
         -- capabilities = {},
         settings = {
           Lua = {
+            completion = {
+              callSnippet = 'Replace',
+            },
             runtime = { version = 'LuaJIT' },
             workspace = {
               checkThirdParty = false,
-              -- Tells lua_ls where to find all the Lua files that you have loaded
-              -- for your neovim configuration.
               library = {
                 '${3rd}/luv/library',
                 unpack(vim.api.nvim_get_runtime_file('', true)),
               },
-              -- If lua_ls is really slow on your computer, you can try this instead:
-              -- library = { vim.env.VIMRUNTIME },
             },
-            completion = {
-              callSnippet = 'Replace',
-            },
-            telemetry = { enable = false },
-            diagnostics = {
-              disable = { 'missing-fields' },
-              globals = { 'vim' }, -- ✅ This is the fix
+            diagnostics = { disable = { 'missing-fields' } },
+            format = {
+              enable = false,
             },
           },
         },
       },
-      emmet_ls = {
-        filetypes = {
-          'html',
-          'css',
-          'javascript',
-          'javascriptreact',
-          'typescriptreact',
-          'vue',
-          'svelte',
-          'blade',
-          'php',
-        },
-        init_options = {
-          html = {
-            options = {
-              ['bem.enabled'] = true,
-            },
-          },
-        },
-      },
+      -- emmet_ls = {
+      --   filetypes = {
+      --     'html', 'css', 'javascript', 'javascriptreact', 'typescriptreact', 'vue', 'svelte', 'blade', 'php',
+      --   },
+      --   init_options = {
+      --     html = {
+      --       options = {
+      --         ['bem.enabled'] = true,
+      --       },
+      --     },
+      --   },
+      --   -- on_attach = function(client)
+      --   --   client.server_capabilities.documentFormattingProvider = false
+      --   --   client.server_capabilities.documentRangeFormattingProvider = false
+      --   -- end,
+      -- },
 
-      -- pylsp = {
-      --   settings = {
-      --     pylsp = {
-      --       plugins = {
-      --         pyflakes = { enabled = false },
-      --         pycodestyle = { enabled = false },
-      --         autopep8 = { enabled = false },
-      --         yapf = { enabled = false },
-      --         mccabe = { enabled = false },
-      --         pylsp_mypy = { enabled = false },
-      --         pylsp_black = { enabled = false },
-      --         pylsp_isort = { enabled = false },
-      --       },
-      --     },
-      --   },
-      -- },
-      -- basedpyright = {
-      --   -- Config options: https://github.com/DetachHead/basedpyright/blob/main/docs/settings.md
-      --   settings = {
-      --     basedpyright = {
-      --       disableOrganizeImports = true, -- Using Ruff's import organizer
-      --       disableLanguageServices = false,
-      --       analysis = {
-      --         ignore = { '*' },                 -- Ignore all files for analysis to exclusively use Ruff for linting
-      --         typeCheckingMode = 'off',
-      --         diagnosticMode = 'openFilesOnly', -- Only analyze open files
-      --         useLibraryCodeForTypes = true,
-      --         autoImportCompletions = true,     -- whether pyright offers auto-import completions
-      --       },
-      --     },
-      --   },
-      -- },
-      -- ruff = {
-      --   -- Notes on code actions: https://github.com/astral-sh/ruff-lsp/issues/119#issuecomment-1595628355
-      --   -- Get isort like behavior: https://github.com/astral-sh/ruff/issues/8926#issuecomment-1834048218
-      --   settings = {
-      --     ignore = { 'E301', 'E302', 'E303', 'E305', 'W291', 'W293', 'W391' },
-      --   },
-      --   commands = {
-      --     RuffAutofix = {
-      --       function()
-      --         vim.lsp.buf.execute_command {
-      --           command = 'ruff.applyAutofix',
-      --           arguments = {
-      --             { uri = vim.uri_from_bufnr(0) },
-      --           },
-      --         }
-      --       end,
-      --       description = 'Ruff: Fix all auto-fixable problems',
-      --     },
-      --     RuffOrganizeImports = {
-      --       function()
-      --         vim.lsp.buf.execute_command {
-      --           command = 'ruff.applyOrganizeImports',
-      --           arguments = {
-      --             { uri = vim.uri_from_bufnr(0) },
-      --           },
-      --         }
-      --       end,
-      --       description = 'Ruff: Format imports',
-      --     },
-      --   },
-      -- },
+      pylsp = {
+        settings = {
+          pylsp = {
+            plugins = {
+              pyflakes = { enabled = false },
+              pycodestyle = { enabled = false },
+              autopep8 = { enabled = false },
+              yapf = { enabled = false },
+              mccabe = { enabled = false },
+              pylsp_mypy = { enabled = false },
+              pylsp_black = { enabled = false },
+              pylsp_isort = { enabled = false },
+            },
+          },
+        },
+      },
+      basedpyright = {
+        -- Config options: https://github.com/DetachHead/basedpyright/blob/main/docs/settings.md
+        settings = {
+          basedpyright = {
+            disableOrganizeImports = true, -- Using Ruff's import organizer
+            disableLanguageServices = false,
+            analysis = {
+              ignore = { '*' },                 -- Ignore all files for analysis to exclusively use Ruff for linting
+              typeCheckingMode = 'off',
+              diagnosticMode = 'openFilesOnly', -- Only analyze open files
+              useLibraryCodeForTypes = true,
+              autoImportCompletions = true,     -- whether pyright offers auto-import completions
+            },
+          },
+        },
+      },
+      ruff = {
+        -- Notes on code actions: https://github.com/astral-sh/ruff-lsp/issues/119#issuecomment-1595628355
+        -- Get isort like behavior: https://github.com/astral-sh/ruff/issues/8926#issuecomment-1834048218
+        settings = {
+          ignore = { 'E301', 'E302', 'E303', 'E305', 'W291', 'W293', 'W391' },
+        },
+        commands = {
+          RuffAutofix = {
+            function()
+              vim.lsp.buf.execute_command {
+                command = 'ruff.applyAutofix',
+                arguments = {
+                  { uri = vim.uri_from_bufnr(0) },
+                },
+              }
+            end,
+            description = 'Ruff: Fix all auto-fixable problems',
+          },
+          RuffOrganizeImports = {
+            function()
+              vim.lsp.buf.execute_command {
+                command = 'ruff.applyOrganizeImports',
+                arguments = {
+                  { uri = vim.uri_from_bufnr(0) },
+                },
+              }
+            end,
+            description = 'Ruff: Format imports',
+          },
+        },
+      },
       jsonls = {},
       sqlls = {},
       terraformls = {},
@@ -234,7 +225,7 @@ return { -- LSP Configuration & Plugins
       ltex = {},
       texlab = {},
     }
-
+    local disabled_servers = { emmet_ls = true }
     -- Ensure the servers and tools above are installed
     require('mason').setup()
 
@@ -243,7 +234,7 @@ return { -- LSP Configuration & Plugins
     local ensure_installed = vim.tbl_keys(servers or {})
     vim.list_extend(ensure_installed, {
       'stylua', -- Used to format lua code
-      'emmet_ls',
+      -- 'emmet_ls',
     })
     require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
